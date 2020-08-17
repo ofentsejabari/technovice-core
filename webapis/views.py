@@ -118,11 +118,20 @@ class VGG16APIFX(APIView):
         image = preprocess_input(image)
         # predict the probability across all output classes
         yhat = model.predict(image)
+
         # convert the probabilities to class labels
-        label = decode_predictions(yhat)
-        print(label)
+        # [[('n02391049', 'zebra', 0.9999527), ('n02129604', 'tiger', 7.838779e-06), ('n02423022',
+        # 'gazelle', 7.109295e-06), ('n02123159', 'tiger_cat', 6.851687e-06), ('n02130308', 'cheetah', 4.6968735e-06)]]
+        labels = decode_predictions(yhat)
+        print(labels)
         # retrieve the most likely result, e.g. highest probability
-        label = label[:2]
+        labels = labels[0]
+        class_prop = []
+        for label in labels:
+            # if np.round(label[2], 3) >= .10:
+            class_prop.append({'class': label[1], 'value': np.round(label[2], 3)})
+
+        print(class_prop)
         # print the classification
         # print('%s (%.2f%%)' % (label[1], label[2]*100))
-        return Response(label)
+        return Response(data={'response': class_prop, 'status': 'ACCEPTED'})
