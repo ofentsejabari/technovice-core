@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'webapis.apps.WebapisConfig',
+    'streamapp.apps.StreamappConfig'
+    
 ]
 
 MIDDLEWARE = [
