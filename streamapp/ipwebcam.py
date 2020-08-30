@@ -29,24 +29,34 @@ from django.conf import settings
 
 
 class IPWebCam(object):
-	def __init__(self):
-		self.url = "http://192.168.81.85:8080/shot.jpg"
+    def __init__(self):
+        self.url = "http://192.168.0.138:8080/shot.jpg"
 
-	def __del__(self):
-		cv2.destroyAllWindows()
+    def __del__(self):
+        cv2.destroyAllWindows()
 
-	def get_frame(self):
+    def get_frame(self):
+        imgResp = urllib.request.urlopen(self.url)
+        imgNp = np.array(bytearray(imgResp.read()), dtype=np.uint8)
 
-		imgResp = urllib.request.urlopen(self.url)
-		imgNp = np.array(bytearray(imgResp.read()),dtype=np.uint8)
+        img = cv2.imdecode(imgNp, -1)
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream
+        # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        resize = cv2.resize(img, (840, 480), interpolation=cv2.INTER_LINEAR)
+        # frame_flip = cv2.flip(resize, 1)
 
-		# img= cv2.imdecode(imgNp,-1)
-		# We are using Motion JPEG, but OpenCV defaults to capture raw images,
-		# so we must encode it into JPEG in order to correctly display the
-		# video stream
-		# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-		# resize = cv2.resize(gray, (640, 480), interpolation = cv2.INTER_LINEAR) 
-		# frame_flip = cv2.flip(resize,1)
-		# ret, jpeg = cv2.imencode('.jpg', img)
-		return imgNp.tobytes()
+        imgText = cv2.putText(
+            img=resize,
+            text="Camera 0 (Location)",
+            org=(10, 50),  # org Bottom-left corner of the text string in the image
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,  # Font type
+            thickness=2,  # Thickness of the lines used to draw a text
+            color=(209, 80, 0),  # Text color
+            fontScale=1
+        )
+
+        ret, jpeg = cv2.imencode('.jpg', imgText)
+
+        return jpeg.tobytes()
