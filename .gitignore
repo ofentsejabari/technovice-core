@@ -1,2 +1,5 @@
 .idea/
 .data/.keras/
+
+*.pyc
+__pycache__/
