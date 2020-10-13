@@ -5,6 +5,39 @@ import cv2, os, urllib.request
 import numpy as np
 from django.conf import settings
 
+# from mrcnn.config import Config
+# from mrcnn.model import MaskRCNN
+
+# import streamapp.visualize_cv2 as vlc
+
+
+# class TestConfig(Config):
+#     NAME = "test"
+#     GPU_COUNT = 1
+#     IMAGES_PER_GPU = 1
+#     NUM_CLASSES = 1 + 80
+
+
+# rcnn = MaskRCNN(mode='inference', model_dir='./', config=TestConfig())
+
+# rcnn.load_weights('/home/ojabari/.keras/models/mask_rcnn_coco.h5', by_name=True)
+
+class_names = ['BG', 'person', 'bicycle', 'car', 'motorcycle', 'airplane',
+               'bus', 'train', 'truck', 'boat', 'traffic light',
+               'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird',
+               'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear',
+               'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie',
+               'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
+               'kite', 'baseball bat', 'baseball glove', 'skateboard',
+               'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup',
+               'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+               'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza',
+               'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed',
+               'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote',
+               'keyboard', 'cell phone', 'microwave', 'oven', 'toaster',
+               'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
+               'teddy bear', 'hair drier', 'toothbrush']
+
 
 # class VideoCamera(object):
 # 	def __init__(self):
@@ -30,7 +63,7 @@ from django.conf import settings
 
 class IPWebCam(object):
     def __init__(self):
-        self.url = "http://192.168.0.138:8080/shot.jpg"
+        self.url = "http://192.168.81.85:8080/shot.jpg"
 
     def __del__(self):
         cv2.destroyAllWindows()
@@ -47,6 +80,15 @@ class IPWebCam(object):
         resize = cv2.resize(img, (840, 480), interpolation=cv2.INTER_LINEAR)
         # frame_flip = cv2.flip(resize, 1)
 
+        # -- Run mask RCNN object detection on the acquired frame --
+        # results = rcnn.detect([resize], verbose=0)
+        # r = results[0]
+
+        # frame = vlc.display_instances(
+        #     frame, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
+        # )
+        
+        # -- Labeled frame --
         imgText = cv2.putText(
             img=resize,
             text="Camera 0 (Location)",

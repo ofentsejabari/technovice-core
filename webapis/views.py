@@ -15,11 +15,10 @@ from tensorflow.keras.applications.vgg16 import VGG16
 
 import pickle
 
-
 class Animal10Predict(APIView):
     """
-    A convolution Neural network multiclass classifier trained on animal10 dataset. The model
-    given an image of either [cat, dog, ] will return the label or identity of that animal.
+        A convolution Neural network multiclass classifier trained on animal10 dataset. The model
+        given an image of either [cat, dog, ] will return the label or identity of that animal.
     """
 
     def post(self, request, format=None):
